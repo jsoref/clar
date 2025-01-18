@@ -100,11 +100,11 @@ fixture_path(const char *base, const char *fixture_name);
 #endif
 
 struct clar_error {
-	const char *file;
-	const char *function;
-	uintmax_t line_number;
-	const char *error_msg;
+	const char *message;
 	char *description;
+	const char *function;
+	const char *file;
+	uintmax_t line_number;
 
 	struct clar_error *next;
 };
@@ -776,7 +776,7 @@ void clar__fail(
 	const char *file,
 	const char *function,
 	size_t line,
-	const char *error_msg,
+	const char *error_message,
 	const char *error_description,
 	int should_abort)
 {
@@ -796,7 +796,7 @@ void clar__fail(
 	error->file = _clar.invoke_file ? _clar.invoke_file : file;
 	error->function = _clar.invoke_func ? _clar.invoke_func : function;
 	error->line_number = _clar.invoke_line ? _clar.invoke_line : line;
-	error->error_msg = error_msg;
+	error->message = error_message;
 
 	if (error_description != NULL &&
 	    (error->description = strdup(error_description)) == NULL)
@@ -814,14 +814,14 @@ void clar__assert(
 	const char *file,
 	const char *function,
 	size_t line,
-	const char *error_msg,
+	const char *error_message,
 	const char *error_description,
 	int should_abort)
 {
 	if (condition)
 		return;
 
-	clar__fail(file, function, line, error_msg, error_description, should_abort);
+	clar__fail(file, function, line, error_message, error_description, should_abort);
 }
 
 void clar__assert_equal(
